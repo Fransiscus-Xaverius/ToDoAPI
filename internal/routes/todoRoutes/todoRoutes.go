@@ -19,8 +19,8 @@ func RegisterTodoRoutes(router *gin.Engine) {
         // Route for retrieving a specific todo by ID
         // todos.GET("/:id", handlers.GetTodoHandler)
 
-        // Route for updating a specific todo by ID
-        // todos.PUT("/:id", handlers.UpdateTodoHandler)
+        // Route for editing a specific todo
+        todos.PUT("/edit", handlers.EditTodoHandler)
 
         // Route for deleting a specific todo by ID
         // todos.DELETE("/:id", handlers.DeleteTodoHandler)

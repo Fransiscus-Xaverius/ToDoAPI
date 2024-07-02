@@ -63,3 +63,33 @@ func ListTodosHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"todos": todos})
 }
+
+func EditTodoHandler(c *gin.Context){
+	var body struct {
+		ID          uint `json:"id" binding:"required"`
+		UserID      string `json:"user_id" binding:"required"`
+		Title       string `json:"title" binding:"required"`
+		Description string `json:"description" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	//define todo model
+	var todo models.Todo
+
+	//find todo, if not found then return 404
+	err := db.DB.Where("id = ?", body.ID).First(&todo).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	
+	//update todo
+	todo.Title = body.Title
+	todo.Description = body.Description
+	db.DB.Save(&todo)
+	c.JSON(http.StatusOK, gin.H{"message": "Todo updated successfully", "todo": todo})
+
+}

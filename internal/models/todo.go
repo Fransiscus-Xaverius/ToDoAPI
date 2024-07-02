@@ -14,7 +14,3 @@ type Todo struct {
     Completed   bool       
     CompletedAt *time.Time 
 }
-
-func Migrate(db *gorm.DB) error {
-    return db.AutoMigrate(&Todo{})
-}

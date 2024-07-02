@@ -85,11 +85,39 @@ func EditTodoHandler(c *gin.Context){
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	
+
 	//update todo
 	todo.Title = body.Title
 	todo.Description = body.Description
 	db.DB.Save(&todo)
 	c.JSON(http.StatusOK, gin.H{"message": "Todo updated successfully", "todo": todo})
-
 }
+
+func DeleteTodoHandler(c *gin.Context){
+	var body struct{
+		ID uint `json:"id" binding:"required"`
+		UserID string `json:"user_id" binding:"required"`
+	}
+
+	//bind data, return 400 if required body is missing
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var todo models.Todo
+
+	err := db.DB.Where("id = ?", body.ID).First(&todo).Error
+
+	//if todo is not found, return 404
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	db.DB.Delete(&todo)
+
+	c.JSON(http.StatusOK, gin.H{"message": "Todo deleted successfully"})
+}
+
+

@@ -9,15 +9,15 @@ import (
 	"github.com/gin-contrib/cors"
 
 	"github.com/Fransiscus-Xaverius/ToDoAPI/internal/db"
-	"github.com/Fransiscus-Xaverius/ToDoAPI/internal/models"
 	"github.com/Fransiscus-Xaverius/ToDoAPI/internal/routes"
+	"github.com/Fransiscus-Xaverius/ToDoAPI/internal/migrations"
 )
 
 func main(){
 	fmt.Println("Starting server...")
 	router := gin.Default() //creates a new gin router.
 	db.Init() //initialize database connection from the db/db.go file
-	err:= models.Migrate(db.DB) //migrates models from the models/todo.go file
+	err:= migrations.Migrate(db.DB) //migrates models from the models/todo.go file
 	if err != nil {  //check for migrate errors
 		log.Fatalf("failed to migrate: %v", err)
 	}
